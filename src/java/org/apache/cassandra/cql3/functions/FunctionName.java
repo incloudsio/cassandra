@@ -110,6 +110,16 @@ public final class FunctionName
         return keyspace == null ? name : keyspace + "." + name;
     }
 
+    /**
+     * @return Unique lowercase function name.
+     */
+    public String name()
+    {
+        return (keyspace == null || keyspace.equals(SchemaConstants.SYSTEM_KEYSPACE_NAME)
+                ? name
+                : keyspace + "." + name).toLowerCase();
+    }
+
     public void appendCqlTo(CqlBuilder builder)
     {
         if (equalsNativeFunction(TOKEN_FUNCTION_NAME))

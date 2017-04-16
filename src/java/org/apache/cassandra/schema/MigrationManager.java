@@ -120,6 +120,11 @@ public class MigrationManager
 
     public static void announceTableUpdate(TableMetadata updated, boolean announceLocally)
     {
+        announceTableUpdate(updated, announceLocally, FBUtilities.timestampMicros());
+    }
+
+    public static void announceTableUpdate(TableMetadata updated, boolean announceLocally, long timestamp)
+    {
         updated.validate();
 
         TableMetadata current = Schema.instance.getTableMetadata(updated.keyspace, updated.name);
@@ -128,8 +133,6 @@ public class MigrationManager
         KeyspaceMetadata ksm = Schema.instance.getKeyspaceMetadata(current.keyspace);
 
         updated.validateCompatibility(current);
-
-        long timestamp = FBUtilities.timestampMicros();
 
         logger.info("Update table '{}/{}' From {} To {}", current.keyspace, current.name, current, updated);
         Mutation.SimpleBuilder builder = SchemaKeyspace.makeUpdateTableMutation(ksm, current, updated, timestamp);

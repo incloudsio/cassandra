@@ -1908,6 +1908,9 @@ public class StorageService extends NotificationBroadcasterSupport implements IE
         // Force disk boundary invalidation now that local tokens are set
         invalidateDiskBoundaries();
 
+        if (this.daemon != null)
+            this.daemon.beforeBootstrap();
+
         Future<StreamState> bootstrapStream = startBootstrap(tokens);
         try
         {
@@ -2371,6 +2374,10 @@ public class StorageService extends NotificationBroadcasterSupport implements IE
         return getEndpointToHostId();
     }
 
+    public UUID getHostId(InetAddress endpoint)
+    {
+        return getTokenMetadata().getHostId(InetAddressAndPort.getByAddress(endpoint));
+    }
 
     public Map<String, String> getEndpointToHostId()
     {

@@ -19,13 +19,14 @@ package org.apache.cassandra.cql3.selection;
 
 import java.nio.ByteBuffer;
 
-import org.apache.cassandra.schema.ColumnMetadata;
+import org.apache.cassandra.cql3.ColumnIdentifier;
 import org.apache.cassandra.cql3.ColumnSpecification;
 import org.apache.cassandra.cql3.QueryOptions;
 import org.apache.cassandra.db.filter.ColumnFilter;
 import org.apache.cassandra.db.filter.ColumnFilter.Builder;
 import org.apache.cassandra.db.marshal.AbstractType;
 import org.apache.cassandra.exceptions.InvalidRequestException;
+import org.apache.cassandra.schema.ColumnMetadata;
 import org.apache.cassandra.transport.ProtocolVersion;
 
 public final class SimpleSelector extends Selector
@@ -49,6 +50,12 @@ public final class SimpleSelector extends Selector
         protected String getColumnName()
         {
             return column.name.toString();
+        }
+
+        @Override
+        protected String getColumnNameCQL3()
+        {
+            return ColumnIdentifier.maybeQuote(column.name.toString());
         }
 
         @Override
@@ -145,6 +152,12 @@ public final class SimpleSelector extends Selector
     public String toString()
     {
         return column.name.toString();
+    }
+
+    @Override
+    public String toCQLString()
+    {
+        return ColumnIdentifier.maybeQuote(column.name.toString());
     }
 
     private SimpleSelector(ColumnMetadata column, int idx)

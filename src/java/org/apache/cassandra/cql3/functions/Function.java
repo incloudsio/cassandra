@@ -59,6 +59,14 @@ public interface Function extends AssignmentTestable
      */
     public String columnName(List<String> columnNames);
 
+    /**
+     * Returns the name of the function that is safe to use directly in CQL queries.
+     *
+     * @param columnNames the names of the columns used to call the function
+     * @return the name of the function to use within a ResultSet
+     */
+    public String columnNameCQL3(List<String> columnNames);
+
     public default Optional<Difference> compare(Function other)
     {
         throw new UnsupportedOperationException();

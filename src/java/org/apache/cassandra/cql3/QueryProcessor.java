@@ -209,7 +209,7 @@ public class QueryProcessor implements QueryHandler
         return new QueryState(InternalStateInstance.INSTANCE.clientState);
     }
 
-    private QueryProcessor()
+    public QueryProcessor()
     {
         Schema.instance.registerListener(new StatementInvalidatingListener());
     }

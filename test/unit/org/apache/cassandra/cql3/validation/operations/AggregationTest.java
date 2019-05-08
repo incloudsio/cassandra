@@ -1834,6 +1834,7 @@ public class AggregationTest extends CQLTester
         }
     }
 
+
     private static void configureLogbackScanPeriod(long millis)
     {
         Logger l = LoggerFactory.getLogger(AggregationTest.class);
@@ -1854,7 +1855,6 @@ public class AggregationTest extends CQLTester
                 break;
             }
         }
-
         ReconfigureOnChangeTask roct = (ReconfigureOnChangeTask) ctx.getObject(RECONFIGURE_ON_CHANGE_TASK);
         if (roct != null)
         {

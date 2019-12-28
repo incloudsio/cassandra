@@ -59,7 +59,7 @@ public final class SchemaConstants
      * ~64 characters, we could allow longer names than this, but on Windows, the entire path should be not greater than
      * 255 characters, so a lower limit here helps avoid problems.  See CASSANDRA-4110.
      */
-    public static final int NAME_LENGTH = 48;
+    public static final int NAME_LENGTH = Integer.getInteger("cassandra.max_name_length", 48);
 
     /**
      * Longest acceptable file name. Longer names lead to too long file name error.

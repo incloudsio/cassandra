@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.cassandra.config.DatabaseDescriptor;
 import org.apache.cassandra.io.FSWriteError;
 import org.apache.cassandra.locator.InetAddressAndPort;
+import org.apache.cassandra.service.GZipStringCompressor;
 import org.apache.cassandra.utils.FBUtilities;
 import org.apache.cassandra.utils.MBeanWrapper;
 
@@ -225,7 +226,24 @@ public class FailureDetector implements IFailureDetector, FailureDetectorMBean
         {
             if (state.getKey() == ApplicationState.TOKENS)
                 continue;
-            sb.append("  ").append(state.getKey()).append(":").append(state.getValue().version).append(":").append(state.getValue().value).append("\n");
+
+            if (state.getKey() == ApplicationState.X1)
+            {
+                String x1Value = "<hidden>";
+                try
+                {
+                    x1Value = GZipStringCompressor.uncompressIfGZipped(state.getValue().value);
+                }
+                catch (IOException e)
+                {
+                    logger.debug("State X1 can't be read", e);
+                }
+                sb.append("  ").append(state.getKey()).append(":").append(state.getValue().version).append(":").append(x1Value).append("\n");
+            }
+            else
+            {
+                sb.append("  ").append(state.getKey()).append(":").append(state.getValue().version).append(":").append(state.getValue().value).append("\n");
+            }
         }
         VersionedValue tokens = endpointState.getApplicationState(ApplicationState.TOKENS);
         if (tokens != null)

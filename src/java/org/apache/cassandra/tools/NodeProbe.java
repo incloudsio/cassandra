@@ -1240,7 +1240,12 @@ public class NodeProbe implements AutoCloseable
 
     public void rebuildIndex(String ksName, String cfName, String... idxNames)
     {
-        ssProxy.rebuildSecondaryIndex(ksName, cfName, idxNames);
+        rebuildIndex(1, ksName, cfName, idxNames);
+    }
+
+    public void rebuildIndex(int indexThreads, String ksName, String cfName, String... idxNames)
+    {
+        ssProxy.rebuildSecondaryIndex(indexThreads, ksName, cfName, idxNames);
     }
 
     public String getGossipInfo(boolean withPort)

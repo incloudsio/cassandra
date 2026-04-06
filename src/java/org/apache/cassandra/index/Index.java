@@ -163,7 +163,7 @@ public interface Index
      */
     interface IndexBuildingSupport
     {
-        SecondaryIndexBuilder getIndexBuildTask(ColumnFamilyStore cfs, Set<Index> indexes, Collection<SSTableReader> sstables);
+        SecondaryIndexBuilder getIndexBuildTask(int indexThreads, ColumnFamilyStore cfs, Set<Index> indexes, Collection<SSTableReader> sstables);
     }
 
     /**
@@ -173,9 +173,9 @@ public interface Index
     public static class CollatedViewIndexBuildingSupport implements IndexBuildingSupport
     {
         @SuppressWarnings("resource")
-        public SecondaryIndexBuilder getIndexBuildTask(ColumnFamilyStore cfs, Set<Index> indexes, Collection<SSTableReader> sstables)
+        public SecondaryIndexBuilder getIndexBuildTask(int indexThreads, ColumnFamilyStore cfs, Set<Index> indexes, Collection<SSTableReader> sstables)
         {
-            return new CollatedViewIndexBuilder(cfs, indexes, new ReducingKeyIterator(sstables), sstables);
+            return new CollatedViewIndexBuilder(indexThreads, cfs, indexes, new ReducingKeyIterator(sstables), sstables);
         }
     }
 

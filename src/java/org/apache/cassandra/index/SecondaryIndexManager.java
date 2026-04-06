@@ -358,6 +358,11 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
      */
     public void rebuildIndexesBlocking(Set<String> indexNames)
     {
+        rebuildIndexesBlocking(1, indexNames);
+    }
+
+    public void rebuildIndexesBlocking(int indexThreads, Set<String> indexNames)
+    {
         // Get the set of indexes that require blocking build
         Set<Index> toRebuild = indexes.values()
                                       .stream()
@@ -392,7 +397,7 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
         try (ColumnFamilyStore.RefViewFragment viewFragment = baseCfs.selectAndReference(View.selectFunction(SSTableSet.CANONICAL));
              Refs<SSTableReader> allSSTables = viewFragment.refs)
         {
-            buildIndexesBlocking(allSSTables, toRebuild, true);
+            buildIndexesBlocking(indexThreads, allSSTables, toRebuild, true);
         }
     }
 
@@ -480,6 +485,12 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
     @SuppressWarnings({ "unchecked" })
     private void buildIndexesBlocking(Collection<SSTableReader> sstables, Set<Index> indexes, boolean isFullRebuild)
     {
+        buildIndexesBlocking(1, sstables, indexes, isFullRebuild);
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    private void buildIndexesBlocking(int indexThreads, Collection<SSTableReader> sstables, Set<Index> indexes, boolean isFullRebuild)
+    {
         if (indexes.isEmpty())
             return;
 
@@ -516,7 +527,7 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
             List<Future<?>> futures = new ArrayList<>(byType.size());
             byType.forEach((buildingSupport, groupedIndexes) ->
                            {
-                               SecondaryIndexBuilder builder = buildingSupport.getIndexBuildTask(baseCfs, groupedIndexes, sstables);
+                               SecondaryIndexBuilder builder = buildingSupport.getIndexBuildTask(indexThreads, baseCfs, groupedIndexes, sstables);
                                final SettableFuture build = SettableFuture.create();
                                Futures.addCallback(CompactionManager.instance.submitIndexBuild(builder), new FutureCallback()
                                {
@@ -1565,7 +1576,7 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
 
             // SSTables asociated to a memtable come from a flush, so their contents have already been indexed
             if (!notice.memtable().isPresent())
-                buildIndexesBlocking(Lists.newArrayList(notice.added),
+                buildIndexesBlocking(1, Lists.newArrayList(notice.added),
                                      indexes.values()
                                             .stream()
                                             .filter(Index::shouldBuildBlocking)

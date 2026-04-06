@@ -703,6 +703,11 @@ public interface StorageServiceMBean extends NotificationEmitter
      */
     public void rebuildSecondaryIndex(String ksName, String cfName, String... idxNames);
 
+    /**
+     * rebuild the specified indexes using multiple builder threads (Murmur3Partitioner only; see nodetool rebuild_index --threads)
+     */
+    public void rebuildSecondaryIndex(int indexThreads, String ksName, String cfName, String... idxNames);
+
     public void resetLocalSchema() throws IOException;
 
     public void reloadLocalSchema();

@@ -766,15 +766,26 @@ public class ColumnFamilyStore implements ColumnFamilyStoreMBean
 
     public void rebuildSecondaryIndex(String idxName)
     {
-        rebuildSecondaryIndex(keyspace.getName(), metadata.name, idxName);
+        rebuildSecondaryIndex(1, keyspace.getName(), metadata.name, idxName);
+    }
+
+    public void rebuildSecondaryIndex(int indexThreads, String idxName)
+    {
+        rebuildSecondaryIndex(indexThreads, keyspace.getName(), metadata.name, idxName);
     }
 
     public static void rebuildSecondaryIndex(String ksName, String cfName, String... idxNames)
     {
+        rebuildSecondaryIndex(1, ksName, cfName, idxNames);
+    }
+
+    public static void rebuildSecondaryIndex(int indexThreads, String ksName, String cfName, String... idxNames)
+    {
         ColumnFamilyStore cfs = Keyspace.open(ksName).getColumnFamilyStore(cfName);
 
-        logger.info("User Requested secondary index re-build for {}/{} indexes: {}", ksName, cfName, Joiner.on(',').join(idxNames));
-        cfs.indexManager.rebuildIndexesBlocking(Sets.newHashSet(Arrays.asList(idxNames)));
+        logger.info("User Requested secondary index re-build for {}/{} with {} threads, indexes: {}",
+                    ksName, cfName, indexThreads, Joiner.on(',').join(idxNames));
+        cfs.indexManager.rebuildIndexesBlocking(indexThreads, Sets.newHashSet(Arrays.asList(idxNames)));
     }
 
     public AbstractCompactionStrategy createCompactionStrategyInstance(CompactionParams compactionParams)

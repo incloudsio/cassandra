@@ -216,6 +216,26 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
         	return Futures.immediateFuture(null);
         }
 
+        return startIndexInitialization(index, indexDef, isNewCF);
+    }
+
+    /**
+     * Runs {@link Index#getInitializationTask()} for an index that deferred startup via {@link Index#delayInitializationTask()}.
+     * Typical callers: custom index backends after the node is ready to coordinate a full build.
+     */
+    public synchronized Future<?> initIndex(Index index)
+    {
+        String name = index.getIndexMetadata().name;
+        if (!indexes.containsKey(name) || indexes.get(name) != index)
+            throw new IllegalArgumentException("Index is not registered with this manager: " + name);
+        if (queryableIndexes.contains(name))
+            return Futures.immediateFuture(null);
+        return startIndexInitialization(index, index.getIndexMetadata(), false);
+    }
+
+    @SuppressWarnings("unchecked")
+    private synchronized Future<?> startIndexInitialization(Index index, IndexMetadata indexDef, boolean isNewCF)
+    {
         markIndexesBuilding(ImmutableSet.of(index), true, isNewCF);
 
         Callable<?> initialBuildTask = null;

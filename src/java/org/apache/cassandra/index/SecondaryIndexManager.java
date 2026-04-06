@@ -218,6 +218,33 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
         if (writableIndexes.put(index.getIndexMetadata().name, index) == null)
             logger.info("Index [{}] registered and writable.", index.getIndexMetadata().name);
 
+        if (index.delayInitializationTask())
+        {
+            logger.info("Deferring initialization for secondary index {}.{}",
+                        baseCfs.keyspace.getName(), index.getIndexMetadata().name);
+            return Futures.immediateFuture(null);
+        }
+
+        return startIndexInitialization(index, indexDef, isNewCF);
+    }
+
+    /**
+     * Runs {@link Index#getInitializationTask()} for an index that deferred startup via {@link Index#delayInitializationTask()}.
+     * Typical callers: external index backends (e.g. OpenSearch) after the node is ready to coordinate a full build.
+     */
+    public synchronized Future<?> initIndex(Index index)
+    {
+        String name = index.getIndexMetadata().name;
+        if (!indexes.containsKey(name) || indexes.get(name) != index)
+            throw new IllegalArgumentException("Index is not registered with this manager: " + name);
+        if (queryableIndexes.contains(name))
+            return Futures.immediateFuture(null);
+        return startIndexInitialization(index, index.getIndexMetadata(), false);
+    }
+
+    @SuppressWarnings("unchecked")
+    private synchronized Future<?> startIndexInitialization(Index index, IndexMetadata indexDef, boolean isNewCF)
+    {
         markIndexesBuilding(ImmutableSet.of(index), true, isNewCF);
 
         Callable<?> initialBuildTask = null;
@@ -243,8 +270,8 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
         }
 
         // otherwise run the initialization task asynchronously with a callback to mark it built or failed
-        final SettableFuture initialization = SettableFuture.create();
-        Futures.addCallback(asyncExecutor.submit(initialBuildTask), new FutureCallback()
+        final SettableFuture<Object> initialization = SettableFuture.create();
+        Futures.addCallback(asyncExecutor.submit(initialBuildTask), new FutureCallback<Object>()
         {
             @Override
             public void onFailure(Throwable t)
@@ -886,17 +913,6 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
 
         executeAllBlocking(nonCfsIndexes.stream(), Index::getBlockingFlushTask, callback);
         FBUtilities.waitOnFutures(wait);
-    }
-
-    /**
-     * CASSANDRA-13269 Snapshot support for custom secondary indices.
-     * Performs a snapshot of all custom indices.
-     */
-    public void snapshotWithoutFlush(String snapshotName) {
-        executeAllBlocking(indexes.values()
-                .stream()
-                .filter(index -> !index.getBackingTable().isPresent()),
-                (index) -> index.getSnapshotWithoutFlushTask(snapshotName));
     }
 
     /**

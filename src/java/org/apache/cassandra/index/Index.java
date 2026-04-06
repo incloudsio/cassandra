@@ -232,6 +232,16 @@ public interface Index
     public Callable<?> getInitializationTask();
 
     /**
+     * When {@code true}, the index manager may defer running {@link #getInitializationTask()} until after startup
+     * or other coordination (e.g. external search backends). Patch 0018 (full SecondaryIndexManager lifecycle)
+     * is not ported on Cassandra 4.0 yet; this hook remains for downstream integration.
+     */
+    default boolean delayInitializationTask()
+    {
+        return false;
+    }
+
+    /**
      * Returns the IndexMetadata which configures and defines the index instance. This should be the same
      * object passed as the argument to setIndexMetadata.
      * @return the index's metadata
@@ -272,16 +282,6 @@ public interface Index
      */
     public Callable<?> getBlockingFlushTask();
 
-    /**
-     * Return a task which performs a blocking snapshot of the index's data to persistent storage.
-     * @param snapshotName
-     * @return task to be executed by the index manager to perform the flush.
-     */
-    default public Callable<?> getSnapshotWithoutFlushTask(String snapshotName)
-    {
-        return null;
-    }
-    
     /**
      * Return a task which invalidates the index, indicating it should no longer be considered usable.
      * This should include an clean up and releasing of resources required when dropping an index.

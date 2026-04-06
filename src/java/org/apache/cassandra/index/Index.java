@@ -232,9 +232,7 @@ public interface Index
     public Callable<?> getInitializationTask();
 
     /**
-     * When {@code true}, the index manager may defer running {@link #getInitializationTask()} until after startup
-     * or other coordination (e.g. external search backends). Patch 0018 (full SecondaryIndexManager lifecycle)
-     * is not ported on Cassandra 4.0 yet; this hook remains for downstream integration.
+     * When {@code true}, callers may defer running {@link #getInitializationTask()} (e.g. external index backends).
      */
     default boolean delayInitializationTask()
     {

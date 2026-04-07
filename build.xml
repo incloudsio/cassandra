@@ -26,9 +26,9 @@
 
     <!-- default version and SCM information -->
     <property name="base.version" value="3.11.9.1"/>
-    <property name="scm.connection" value="scm:git:https://github.com/strapdata/cassandra.git"/>
-    <property name="scm.developerConnection" value="scm:git:git@github.com:strapdata/cassandra.git"/>
-    <property name="scm.url" value="https://github.com/strapdata/cassandra"/>
+    <property name="scm.connection" value="scm:git:https://github.com/incloudsio/cassandra.git"/>
+    <property name="scm.developerConnection" value="scm:git:git@github.com:incloudsio/cassandra.git"/>
+    <property name="scm.url" value="https://github.com/incloudsio/cassandra"/>
 
     <!-- directory details -->
     <property name="basedir" value="."/>
@@ -377,7 +377,7 @@
                     artifactId="cassandra-parent"
                     packaging="pom"
                     version="${version}"
-                    url="https://github.com/strapdata/cassandra"
+                    url="https://github.com/incloudsio/cassandra"
                     name="Elassandra Cassandra"
                     inceptionYear="2009"
                     description="A fork of the Apache Cassandra Project for Elassandra (OpenSearch + Cassandra).">
@@ -615,7 +615,7 @@
 
       <artifact:pom id="all-pom"
                     artifactId="cassandra-all"
-                    url="https://github.com/strapdata/cassandra"
+                    url="https://github.com/incloudsio/cassandra"
                     name="Elassandra Cassandra">
         <parent groupId="org.elasticsearch.cassandra"
                 artifactId="cassandra-parent"
@@ -706,7 +706,7 @@
       <artifact:pom id="dist-pom"
                     artifactId="elassandra-cassandra"
                     packaging="pom"
-                    url="https://github.com/strapdata/cassandra"
+                    url="https://github.com/incloudsio/cassandra"
                     name="Elassandra Cassandra">
         <parent groupId="org.elasticsearch.cassandra"
                 artifactId="cassandra-parent"

@@ -373,7 +373,7 @@
             description="Define dependencies and dependency versions">
       <!-- The parent pom defines the versions of all dependencies -->
       <artifact:pom id="parent-pom"
-                    groupId="org.elasticsearch.cassandra"
+                    groupId="io.inclouds.cassandra"
                     artifactId="cassandra-parent"
                     packaging="pom"
                     version="${version}"
@@ -454,8 +454,8 @@
           <dependency groupId="org.openjdk.jmh" artifactId="jmh-core" version="1.21"/>
           <dependency groupId="org.openjdk.jmh" artifactId="jmh-generator-annprocess" version="1.21"/>
 
-          <dependency groupId="org.elasticsearch.cassandra" artifactId="cassandra-all" version="${version}" />
-          <dependency groupId="org.elasticsearch.cassandra" artifactId="cassandra-thrift" version="${version}" />
+          <dependency groupId="io.inclouds.cassandra" artifactId="cassandra-all" version="${version}" />
+          <dependency groupId="io.inclouds.cassandra" artifactId="cassandra-thrift" version="${version}" />
           <dependency groupId="io.dropwizard.metrics" artifactId="metrics-core" version="3.1.5" />
           <dependency groupId="io.dropwizard.metrics" artifactId="metrics-jvm" version="3.1.5" />
           <dependency groupId="com.addthis.metrics" artifactId="reporter-config3" version="3.0.3" />
@@ -536,7 +536,7 @@
       <!-- each dependency set then defines the subset of the dependencies for that dependency set -->
       <artifact:pom id="build-deps-pom"
                     artifactId="cassandra-build-deps">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <dependency groupId="junit" artifactId="junit"/>
@@ -567,7 +567,7 @@
            artifacts that have "-source.jar" files -->
       <artifact:pom id="build-deps-pom-sources"
                     artifactId="cassandra-build-deps">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <dependency groupId="junit" artifactId="junit"/>
@@ -592,7 +592,7 @@
 
       <artifact:pom id="coverage-deps-pom"
                     artifactId="cassandra-coverage-deps">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <dependency groupId="org.jacoco" artifactId="org.jacoco.agent"/>
@@ -605,7 +605,7 @@
 
       <artifact:pom id="test-deps-pom"
                     artifactId="cassandra-test-deps">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <dependency groupId="joda-time" artifactId="joda-time"/>
@@ -617,7 +617,7 @@
                     artifactId="cassandra-all"
                     url="https://github.com/incloudsio/cassandra"
                     name="Elassandra Cassandra">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <scm connection="${scm.connection}" developerConnection="${scm.developerConnection}" url="${scm.url}"/>
@@ -653,7 +653,7 @@
         <dependency groupId="ch.qos.logback" artifactId="logback-classic"/>
 
         <dependency groupId="org.apache.thrift" artifactId="libthrift"/>
-        <dependency groupId="org.elasticsearch.cassandra" artifactId="cassandra-thrift"/>
+        <dependency groupId="io.inclouds.cassandra" artifactId="cassandra-thrift"/>
 
         <!-- don't need hadoop classes to run, but if you use the hadoop stuff -->
         <dependency groupId="org.apache.hadoop" artifactId="hadoop-core" optional="true"/>
@@ -689,7 +689,7 @@
                     artifactId="cassandra-thrift"
                     url="https://cassandra.apache.org"
                     name="Apache Cassandra">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <scm connection="${scm.connection}" developerConnection="${scm.developerConnection}" url="${scm.url}"/>
@@ -708,7 +708,7 @@
                     packaging="pom"
                     url="https://github.com/incloudsio/cassandra"
                     name="Elassandra Cassandra">
-        <parent groupId="org.elasticsearch.cassandra"
+        <parent groupId="io.inclouds.cassandra"
                 artifactId="cassandra-parent"
                 version="${version}"/>
         <scm connection="${scm.connection}" developerConnection="${scm.developerConnection}" url="${scm.url}"/>

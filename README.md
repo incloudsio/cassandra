@@ -15,7 +15,7 @@ Default branch on GitHub is usually **`cassandra-3.11.9-elassandra`** (what Elas
 
 ## Build
 
-See [Apache Cassandra](https://github.com/apache/cassandra) for general build instructions (Ant, JDK). Published artifact **`groupId`** / **`artifactId`** pairs are defined in `build.xml`; Elassandra resolves them via Gradle (see [CONTRIBUTING](https://github.com/incloudsio/elassandra/blob/master/CONTRIBUTING.md)).
+See [Apache Cassandra](https://github.com/apache/cassandra) for general build instructions (Ant, JDK). Published artifacts use Maven **`groupId` `io.inclouds.cassandra`** (see `build.xml`); Elassandra resolves **`cassandra-all`** via Gradle (see [CONTRIBUTING](https://github.com/incloudsio/elassandra/blob/master/CONTRIBUTING.md)).
 
 ## Contributing
 

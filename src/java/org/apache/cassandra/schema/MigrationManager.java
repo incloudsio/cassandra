@@ -39,6 +39,7 @@ import org.apache.cassandra.locator.InetAddressAndPort;
 import org.apache.cassandra.net.Message;
 import org.apache.cassandra.net.MessagingService;
 import org.apache.cassandra.schema.Keyspaces.KeyspacesDiff;
+import org.apache.cassandra.schema.SchemaConstants;
 import org.apache.cassandra.utils.FBUtilities;
 
 import static org.apache.cassandra.concurrent.Stage.MIGRATION;
@@ -373,6 +374,24 @@ public class MigrationManager
         }
 
         return builder == null ? Optional.empty() : Optional.of(builder.build());
+    }
+
+    /**
+     * Elassandra: approximate pre-4.0 {@code org.apache.cassandra.service.MigrationManager} bootstrap readiness
+     * (used by {@code org.apache.cassandra.service.ElassandraDaemon#ringReady}).
+     */
+    public static boolean isReadyForBootstrap()
+    {
+        return !Schema.instance.getVersion().equals(SchemaConstants.emptyVersion);
+    }
+
+    /**
+     * Elassandra: wait until local schema is initialized (see {@link #isReadyForBootstrap()}).
+     */
+    public static void waitUntilReadyForBootstrap()
+    {
+        while (!isReadyForBootstrap())
+            com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly(100, TimeUnit.MILLISECONDS);
     }
 
     public static class MigrationsSerializer implements IVersionedSerializer<Collection<Mutation>>

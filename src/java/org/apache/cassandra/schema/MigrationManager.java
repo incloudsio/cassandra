@@ -204,6 +204,54 @@ public class MigrationManager
         FBUtilities.waitOnFuture(f);
     }
 
+    /**
+     * Elassandra: announce schema mutations without notifying the given listeners during merge (avoids ES↔CQL feedback loops).
+     */
+    public static void announce(Collection<Mutation> mutations, Collection<SchemaChangeListener> inhibitListeners)
+    {
+        if (inhibitListeners != null)
+        {
+            for (SchemaChangeListener l : inhibitListeners)
+                Schema.instance.unregisterListener(l);
+        }
+        try
+        {
+            announce(mutations);
+        }
+        finally
+        {
+            if (inhibitListeners != null)
+            {
+                for (SchemaChangeListener l : inhibitListeners)
+                    Schema.instance.registerListener(l);
+            }
+        }
+    }
+
+    /**
+     * Elassandra: merge schema mutations locally without notifying selected listeners (used before gossip is ready).
+     */
+    public static void mergeSchema(Collection<Mutation> mutations, Collection<SchemaChangeListener> inhibitListeners)
+    {
+        if (inhibitListeners != null)
+        {
+            for (SchemaChangeListener l : inhibitListeners)
+                Schema.instance.unregisterListener(l);
+        }
+        try
+        {
+            Schema.instance.merge(mutations);
+        }
+        finally
+        {
+            if (inhibitListeners != null)
+            {
+                for (SchemaChangeListener l : inhibitListeners)
+                    Schema.instance.registerListener(l);
+            }
+        }
+    }
+
     public static Future<?> announceWithoutPush(Collection<Mutation> schema)
     {
         return MIGRATION.submit(() -> Schema.instance.mergeAndAnnounceVersion(schema));

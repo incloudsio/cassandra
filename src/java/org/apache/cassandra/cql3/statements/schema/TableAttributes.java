@@ -65,7 +65,8 @@ public final class TableAttributes extends PropertyDefinitions
         return build(TableParams.builder());
     }
 
-    TableParams asAlteredTableParams(TableParams previous)
+    /** Public for Elassandra (org.elassandra.cluster.SchemaManager). */
+    public TableParams asAlteredTableParams(TableParams previous)
     {
         if (getId() != null)
             throw new ConfigurationException("Cannot alter table id.");

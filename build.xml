@@ -332,9 +332,9 @@
         <fileset dir="${build.dir.lib}">
             <include name="**/*.jar" />
         </fileset>
+        <!-- ant-junit + ant.jar (from parent pom) are required to compile CassandraBriefJUnitResultFormatter et al. -->
         <fileset dir="${test.lib}/jars">
             <include name="**/*.jar" />
-            <exclude name="**/ant-*.jar"/>
         </fileset>
     </path>
 

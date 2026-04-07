@@ -297,6 +297,18 @@ public interface Index
     public Callable<?> getTruncateTask(long truncatedAt);
 
     /**
+     * Elassandra / custom indexes: snapshot auxiliary storage (for example Lucene directories) without flushing
+     * the base table. Default is no task; {@code org.elassandra.index.ElasticSecondaryIndex} hardlinks Elasticsearch data.
+     *
+     * @param snapshotName name of the snapshot directory under the table data path
+     * @return task for {@link SecondaryIndexManager} to run on the blocking executor, or {@code null} for a no-op
+     */
+    default Callable<?> getSnapshotWithoutFlushTask(String snapshotName)
+    {
+        return null;
+    }
+
+    /**
      * Return a task to be executed before the node enters NORMAL state and finally joins the ring.
      *
      * @param hadBootstrap If the node had bootstrap before joining.

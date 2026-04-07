@@ -840,6 +840,15 @@ public class SecondaryIndexManager implements IndexRegistry, INotificationConsum
     }
 
     /**
+     * Snapshot custom index auxiliary storage (for example Elasticsearch Lucene directories) without flushing SSTables.
+     * Invoked from {@link org.apache.cassandra.db.ColumnFamilyStore#snapshotWithoutFlush(String)}.
+     */
+    public void snapshotWithoutFlush(String snapshotName)
+    {
+        executeAllBlocking(indexes.values().stream(), (index) -> index.getSnapshotWithoutFlushTask(snapshotName), null);
+    }
+
+    /**
      * Remove all indexes
      */
     public void dropAllIndexes()

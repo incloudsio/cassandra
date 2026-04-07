@@ -899,21 +899,31 @@
         <echo message="${base.version}" />
     </target>
 
-    <condition property="javassist-maven.jar.exists">
-          <available file="${build.dir}/javassist-maven-plugin-2.4.jar" />
+    <!-- Runtime Javassist: resolver no longer always places javassist-*.jar under build/lib; the Ant task needs it explicitly. -->
+    <property name="javassist.runtime.version" value="3.28.0-GA"/>
+    <property name="javassist.runtime.jar" value="${build.dir}/javassist-${javassist.runtime.version}.jar"/>
+    <condition property="javassist-transform-deps.complete">
+        <and>
+            <available file="${build.dir}/javassist-maven-plugin-2.4.jar"/>
+            <available file="${build.dir}/javassist-maven-plugin-core-2.4.jar"/>
+            <available file="${javassist.runtime.jar}"/>
+        </and>
     </condition>
-    <target name="javassit-maven-download" depends="init" unless="javassist-maven.jar.exists"
+    <target name="javassit-maven-download" depends="init" unless="javassist-transform-deps.complete"
                 description="Fetch Maven Javassit from Maven Central Repositroy">
           <echo>Downloading Javassist Maven Plugin...</echo>
           <get src="https://oss.sonatype.org/content/repositories/releases/com/strapdata/javassist-maven-plugin/2.4/javassist-maven-plugin-2.4.jar"
                dest="${build.dir}/javassist-maven-plugin-2.4.jar" usetimestamp="true" />
           <get src="https://oss.sonatype.org/content/repositories/releases/com/strapdata/javassist-maven-plugin-core/2.4/javassist-maven-plugin-core-2.4.jar"
                dest="${build.dir}/javassist-maven-plugin-core-2.4.jar" usetimestamp="true" />
+          <get src="https://repo1.maven.org/maven2/org/javassist/javassist/${javassist.runtime.version}/javassist-${javassist.runtime.version}.jar"
+               dest="${javassist.runtime.jar}" usetimestamp="true" />
     </target>
 
     <path id="javassist.classpath">
           <pathelement location="${build.dir}/javassist-maven-plugin-2.4.jar" />
           <pathelement location="${build.dir}/javassist-maven-plugin-core-2.4.jar" />
+          <pathelement location="${javassist.runtime.jar}" />
     </path>
 
      <target name="transform" description="Fix String default Locale with a javassit transformer" depends="build, javassit-maven-download">

@@ -96,7 +96,7 @@ public class FailureDetectorTest
         final UUID hostId = UUID.randomUUID();
         final String simpleTest = "SimpleTest";
         final String rackId = "rack-1236";
-        InetAddress ep = InetAddress.getByName("127.0.0.1");
+        InetAddressAndPort ep = InetAddressAndPort.getByName("127.0.0.1");
 
         Gossiper.instance.initializeNodeUnsafe(ep, hostId, 1);
         EndpointState initialRemoteState = Gossiper.instance.getEndpointStateForEndpoint(ep);

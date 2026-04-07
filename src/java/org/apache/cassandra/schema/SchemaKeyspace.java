@@ -65,7 +65,7 @@ import static org.apache.cassandra.schema.SchemaKeyspaceTables.*;
  * Please notice this class is _not_ thread safe. It should be accessed through {@link org.apache.cassandra.schema.Schema}. See CASSANDRA-16856/16996
  */
 @NotThreadSafe
-final class SchemaKeyspace
+public final class SchemaKeyspace
 {
     private SchemaKeyspace()
     {
@@ -478,7 +478,8 @@ final class SchemaKeyspace
         return builder;
     }
 
-    private static void addTypeToSchemaMutation(UserType type, Mutation.SimpleBuilder mutation)
+    /** Public for Elassandra schema bridge (org.elassandra.cluster.SchemaManager). */
+    public static void addTypeToSchemaMutation(UserType type, Mutation.SimpleBuilder mutation)
     {
         mutation.update(Types)
                 .row(type.getNameAsString())
@@ -603,6 +604,16 @@ final class SchemaKeyspace
         // updated indexes need to be updated
         for (MapDifference.ValueDifference<IndexMetadata> diff : indexesDiff.entriesDiffering().values())
             addUpdatedIndexToSchemaMutation(newTable, diff.rightValue(), builder);
+    }
+
+    /**
+     * Elassandra: apply a table extensions-only change into an existing schema mutation builder.
+     * (Used by org.elassandra.cluster.SchemaManager and org.elasticsearch.cluster.service.ClusterService.)
+     */
+    public static void addTableExtensionsToSchemaMutation(TableMetadata table, Map<String, ByteBuffer> extensions, Mutation.SimpleBuilder builder)
+    {
+        TableMetadata updated = table.unbuild().params(table.params.unbuild().extensions(extensions).build()).build();
+        addAlterTableToSchemaMutation(table, updated, builder);
     }
 
     static Mutation.SimpleBuilder makeUpdateTableMutation(KeyspaceMetadata keyspace,
@@ -760,7 +771,8 @@ final class SchemaKeyspace
             addColumnToSchemaMutation(after.metadata, after.metadata.getColumn(name), builder);
     }
 
-    private static void addIndexToSchemaMutation(TableMetadata table, IndexMetadata index, Mutation.SimpleBuilder builder)
+    /** Public for Elassandra schema bridge. */
+    public static void addIndexToSchemaMutation(TableMetadata table, IndexMetadata index, Mutation.SimpleBuilder builder)
     {
         builder.update(Indexes)
                .row(table.name, index.name)
@@ -768,12 +780,14 @@ final class SchemaKeyspace
                .add("options", index.options);
     }
 
-    private static void dropIndexFromSchemaMutation(TableMetadata table, IndexMetadata index, Mutation.SimpleBuilder builder)
+    /** Public for Elassandra schema bridge. */
+    public static void dropIndexFromSchemaMutation(TableMetadata table, IndexMetadata index, Mutation.SimpleBuilder builder)
     {
         builder.update(Indexes).row(table.name, index.name).delete();
     }
 
-    private static void addUpdatedIndexToSchemaMutation(TableMetadata table,
+    /** Public for Elassandra schema bridge. */
+    public static void addUpdatedIndexToSchemaMutation(TableMetadata table,
                                                         IndexMetadata index,
                                                         Mutation.SimpleBuilder builder)
     {

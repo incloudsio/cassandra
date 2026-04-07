@@ -19,10 +19,12 @@
          xmlns:if="ant:if"
          xmlns:unless="ant:unless">
 
-    <fail message="You need to use Ant of version at least 1.10 to continue.">
+    <!-- Cassandra upstream requires Ant 1.10+ for standalone builds. Elassandra imports
+         this file via Gradle 5.4, which embeds Ant 1.9.13; ant:if/unless need 1.9.1+. -->
+    <fail message="You need to use Ant of version at least 1.9.1 to continue.">
       <condition>
         <not>
-          <antversion atleast="1.10"/>
+          <antversion atleast="1.9.1"/>
         </not>
       </condition>
     </fail>

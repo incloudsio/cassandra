@@ -3,12 +3,12 @@
 This branch (**`cassandra-4.0.x-elassandra`**) ports Elassandra-specific changes onto **Apache Cassandra 4.0.x** (pinned to **`base.version`** in `build.xml`, e.g. **4.0.20**).
 
 * **Canonical repo:** [github.com/incloudsio/cassandra](https://github.com/incloudsio/cassandra)
-* **Production line today:** branch **`cassandra-3.11.9-elassandra`** (Cassandra 3.11) — what [Elassandra](https://github.com/incloudsio/elassandra) builds by default.
+* **Production line today:** branch **`cassandra-4.0.x-elassandra`** (Cassandra 4.0) — the line used by [Elassandra](https://github.com/incloudsio/elassandra).
 * **Maven `groupId`:** **`io.inclouds.cassandra`** for **`cassandra-all`** (see `build.xml`).
 
 ## Status
 
-Porting is **in progress**: many patches from the 3.11 delta are applied; others are deferred (see Elassandra `docs/elassandra/source/developer/cassandra_40_rebase.rst`). Expect to iterate with the OpenSearch 1.3.x integration in the main Elassandra repository.
+The Cassandra 4.0 port is the active baseline for the merged OpenSearch 1.3.x Elassandra line. Historical rebase notes remain in `docs/elassandra/source/developer/cassandra_40_rebase.rst`.
 
 ## Build
 

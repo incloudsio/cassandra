@@ -42,6 +42,15 @@ public class SigarLibrary
     private SigarLibrary()
     {
         logger.info("Initializing SIGAR library");
+        if (FBUtilities.isLinux)
+        {
+            String arch = System.getProperty("os.arch", "").toLowerCase();
+            if (arch.contains("aarch64") || arch.contains("arm64"))
+            {
+                logger.info("Skipping SIGAR initialization on unsupported Linux architecture {}", arch);
+                return;
+            }
+        }
         try
         {
             sigar = new Sigar();

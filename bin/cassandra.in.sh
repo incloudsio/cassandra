@@ -56,6 +56,7 @@ done
 
 # JSR223 - collect all JSR223 engines' jars
 for jsr223jar in "$CASSANDRA_HOME"/lib/jsr223/*/*.jar; do
+    [ -f "$jsr223jar" ] || continue
     CLASSPATH="$CLASSPATH:$jsr223jar"
 done
 

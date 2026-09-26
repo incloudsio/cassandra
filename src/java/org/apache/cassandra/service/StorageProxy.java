@@ -2187,6 +2187,14 @@ public class StorageProxy implements StorageProxyMBean
         }
 
         Set<InetAddressAndPort> allEndpoints = StorageService.instance.getLiveRingMembers(true);
+        InetAddressAndPort local = FBUtilities.getBroadcastAddressAndPort();
+        if (allEndpoints.isEmpty() || (allEndpoints.size() == 1 && allEndpoints.contains(local)))
+        {
+            // Single-node / embedded: internodes to self can drop TRUNCATE_REQ, so apply locally.
+            logger.debug("Applying truncate locally for {}.{}", keyspace, cfname);
+            Keyspace.open(keyspace).getColumnFamilyStore(cfname).truncateBlocking();
+            return;
+        }
 
         int blockFor = allEndpoints.size();
         final TruncateResponseHandler responseHandler = new TruncateResponseHandler(blockFor);
